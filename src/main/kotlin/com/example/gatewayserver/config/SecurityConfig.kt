@@ -13,8 +13,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 @Configuration
 @EnableWebFluxSecurity
 class SecurityConfig(
-    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
-    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
+//    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+//    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
 ) {
 
     @Bean
@@ -23,22 +23,22 @@ class SecurityConfig(
             .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
-            .exceptionHandling { exceptionHandling ->
-                exceptionHandling
-                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
-            }
-            .authorizeExchange {
-                it.pathMatchers("/api/v1/users/join").permitAll()
-                it.pathMatchers("/api/v1/users/refresh-token").permitAll()
-                it.pathMatchers("/api/v1/users/user-info").permitAll()
-                it.pathMatchers("/api/v1/auth/login").permitAll()
-                it.pathMatchers("/api/v1/auth/encode-password").permitAll()
-                it.pathMatchers("/api/v1/auth/authentication/**").permitAll()
-                it.pathMatchers("/api/v1/auth/check-token/**").permitAll()
-                it.anyExchange().authenticated()
-            }
-            .addFilterAt(jwtAuthenticationProcessingFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+//            .exceptionHandling { exceptionHandling ->
+//                exceptionHandling
+//                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                    .accessDeniedHandler(jwtAccessDeniedHandler)
+//            }
+//            .authorizeExchange {
+////                it.pathMatchers("/api/v1/users/join").permitAll()
+////                it.pathMatchers("/api/v1/users/refresh-token").permitAll()
+////                it.pathMatchers("/api/v1/users/user-info").permitAll()
+////                it.pathMatchers("/api/v1/auth/login").permitAll()
+////                it.pathMatchers("/api/v1/auth/encode-password").permitAll()
+////                it.pathMatchers("/api/v1/auth/authentication/**").permitAll()
+////                it.pathMatchers("/api/v1/auth/check-token/**").permitAll()
+//                it.anyExchange().permitAll()
+//            }
+            .authorizeExchange { it.anyExchange().permitAll() }
             .build()
     }
 
