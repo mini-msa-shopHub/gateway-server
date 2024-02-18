@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.exceptions.SignatureVerificationException
 import com.auth0.jwt.exceptions.TokenExpiredException
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.server.ServerWebExchange
@@ -14,7 +13,8 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
-
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 @Component
 class JwtAuthenticationProcessingFilter : WebFilter {
@@ -49,7 +49,6 @@ class JwtAuthenticationProcessingFilter : WebFilter {
 
     private fun isTokenValid(token: String?): Boolean {
         if (token == null) {
-            println("이게 왜 널?")
             return false
         }
         return try {
@@ -72,20 +71,20 @@ class JwtAuthenticationProcessingFilter : WebFilter {
     }
 
     private fun createPassportToken(email: String): String {
-        val now = Date()
-        return JWT.create()
-            .withIssuer("admin")
-            .withSubject("passport")
-            .withExpiresAt(Date(now.time + 3600000))
-            .withClaim("email", email)
-            .withClaim("from-service", "gateway")
-            .sign(Algorithm.HMAC512("abcdefg"))
+        try {
+            val instance = Mac.getInstance("HmacSHA256")
+            val secretKey = "this-is-secret"
+            val keySpec = SecretKeySpec(secretKey.toByteArray(), "HmacSHA256")
+            instance.init(keySpec)
+            instance.update(email.toByteArray())
+            return Base64.getEncoder().encodeToString(instance.doFinal(email.toByteArray()))
+        } catch (e: Exception) {
+            println(e.message)
+            return ""
+        }
     }
 
     fun extractEmail(token: String?): String? {
-        if (token == null) {
-            print("이건 진짜 아닌데")
-        }
         return try {
             JWT.require(Algorithm.HMAC512("abcdefg"))
                 .withIssuer("admin")
