@@ -1,12 +1,9 @@
 package com.example.gatewayserver.config
 
-import com.example.gatewayserver.filter.JwtAccessDeniedHandler
-import com.example.gatewayserver.filter.JwtAuthenticationEntryPoint
 import com.example.gatewayserver.filter.JwtAuthenticationProcessingFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
 
